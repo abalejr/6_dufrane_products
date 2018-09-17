@@ -1,0 +1,292 @@
+<div class="product-details" data-product-details data-product-title="{{product.title}}">
+  <div class="single-product-information">
+    <div class="single-product-price">
+      {{#if product.call_for_price}}
+        <div class="product-call-for-price">
+          {{product.call_for_price}}
+        </div>
+      {{else}}
+        {{> components/products/price context="product" price=product.price show_savings=true}}
+      {{/if}}
+    </div>
+
+    <h1 class="single-product-title">
+      {{product.title}}
+    </h1>
+
+    {{#if settings.show_product_rating}}
+      <div class="single-product-rating">
+        {{> components/products/ratings rating=product.rating size="medium"}}
+      </div>
+
+      {{{snippet 'product_rating'}}}
+    {{/if}}
+
+    {{#if settings.show_wishlist}}
+      <form class="single-product-add-to-wishlist" method="post" action="{{product.add_to_wishlist_url}}">
+        <input type="hidden" name="variation_id" value="">
+        <button class="text-button icon" type="submit">
+          <i class="icon-heart"></i> {{lang 'product.add_to_wishlist'}}
+        </button>
+      </form>
+    {{/if}}
+
+    {{#if theme_settings.product_sharing_buttons}}
+      <div class="single-product-sharing">
+        {{> components/snippets/sharing-buttons
+          sharing_url=product.url
+          sharing_title=product.title
+          sharing_source=settings.add_this.buttons}}
+      </div>
+    {{/if}}
+
+    {{#if product.brand}}
+      <div class="single-product-brand">
+        <span class="single-product-meta-item-label">{{lang 'product.brand'}}:</span>
+        {{#if product.brand.url}}
+          <a class="single-product-meta-item-value" href="{{product.brand.url}}">{{product.brand.name}}</a>
+        {{else}}
+          <span class="single-product-meta-item-value">{{product.brand.name}}</span>
+        {{/if}}
+      </div>
+    {{/if}}
+
+    {{> components/products/product/additional-details}}
+  </div>
+
+  <div class="single-product-alerts">
+    <div class="product-message alert" data-product-message></div>
+
+    {{#each product.reviews.messages}}
+      {{#if error}}
+        {{> components/alerts/alert-error this.error}}
+      {{/if}}
+      {{#if success}}
+        {{> components/alerts/alert-success this.success}}
+      {{/if}}
+    {{/each}}
+
+    {{#if product.out_of_stock}}
+      {{#if product.out_of_stock_message}}
+        {{> components/alerts/alert-error product.out_of_stock_message}}
+      {{else}}
+        {{> components/alerts/alert-error (lang 'products.sold_out')}}
+      {{/if}}
+    {{/if}}
+  </div>
+
+  <div class="single-product-form">
+    <form
+      class="form"
+      method="post"
+      action="{{product.cart_url}}"
+      enctype="multipart/form-data"
+      data-product-options-count="{{product.options.length}}"
+      data-product-form data-validated-form>
+
+      <input type="hidden" name="action" value="add">
+      <input type="hidden" name="product_id" value="{{product.id}}" data-product-id>
+
+      {{#if product.can_purchase}}
+        {{#if product.show_quantity_input}}
+          <div class="product-quantity" data-product-quantity>
+            <label class="form-label" for="quantity">
+              <span class="form-field-title">{{lang 'product.quantity'}}</span>
+
+              <div class="quantity-input-wrap">
+                <div class="form-field-control">
+                  <input
+                    class="quantity-input form-input"
+                    type="text"
+                    name="qty[]"
+                    value="{{#if product.min_purchase_quantity}}{{product.min_purchase_quantity}}{{else}}1{{/if}}"
+                    min="{{#if product.min_purchase_quantity}}{{product.min_purchase_quantity}}{{else}}0{{/if}}"
+                    max="{{#if product.max_purchase_quantity '!==' 0}}{{product.max_purchase_quantity}}{{/if}}"
+                    data-product-quantity-input
+                  >
+                  <div class="product-quantity-toggle-wrapper">
+                    <span class="quantity-toggle quantity-increment button" data-product-quantity-change data-quantity-increment>
+                      <i class="increment-icon icon-plus"></i>
+                    </span>
+                    <span class="quantity-toggle quantity-decrement button" data-product-quantity-change data-quantity-decrement>
+                      <i class="decrement-icon icon-minus"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </label>
+          </div>
+        {{else}}
+          <input type="hidden" name="qty[]" value="1">
+        {{/if}}
+      {{/if}}
+
+      <div class="single-product-options">
+        {{#if product.options}}
+          <div class="product-options" data-product-option-change>
+            {{#each product.options}}
+              {{{dynamicComponent 'core/forms/options'}}}
+            {{/each}}
+          </div>
+        {{/if}}
+
+        {{#if product.customizations}}
+          <div class="product-customizations">
+            {{#each product.customizations}}
+              {{{dynamicComponent 'core/forms/customizations'}}}
+            {{/each}}
+          </div>
+        {{/if}}
+      </div>
+
+      {{#if product.event_date}}
+        <div class="product-event form-field form-field-date form-required">
+          <span class="form-label">
+            <span class="form-field-title">
+              {{product.event_date.name}}
+              <span class="required-text">{{lang 'common.required'}}</span>
+            </span>
+            <span class="form-field-control">
+              <span class="form-select-wrapper">
+                <select class="form-input form-select" name="EventDate[Mth]" required>
+                  <option selected disabled>{{lang 'forms.date.month'}}</option>
+                  {{#for 1 12}}
+                    <option value="{{$index}}">{{getShortMonth $index}}</option>
+                  {{/for}}
+                </select>
+              </span>
+              <span class="form-select-wrapper">
+                <select class="form-input form-select" name="EventDate[Day]" required>
+                  <option selected disabled>{{lang 'forms.date.day'}}</option>
+                  {{#for 1 31}}
+                    <option value="{{$index}}">{{$index}}</option>
+                  {{/for}}
+                </select>
+              </span>
+              <span class="form-select-wrapper">
+                <select class="form-input form-select" name="EventDate[Yr]" required>
+                  <option selected disabled>{{lang 'forms.date.year'}}</option>
+                  {{#if product.event_date.earliest_year '===' product.event_date.latest_year}}
+                    <option value="{{product.event_date.earliest_year}}" >{{product.event_date.earliest_year}}</option>
+                  {{else}}
+                    {{#for product.event_date.earliest_year product.event_date.latest_year}}
+                      <option value="{{$index}}" >{{$index}}</option>
+                    {{/for}}
+                  {{/if}}
+                </select>
+              </span>
+            </span>
+          </span>
+          {{#if product.event_date.date_start}}
+             <span class="product-event-bounds">{{lang 'product.event_bounds' start_date=product.event_date.date_start end_date=product.event_date.date_end}}</span>
+          {{/if}}
+        </div>
+      {{/if}}
+    </form>
+  </div>
+
+  <div class="form-actions single-product-add-to-cart" data-product-add>
+    {{#if product.can_purchase}}
+      <div class="product-add-button-wrapper">
+        <button class="product-add-button button {{#if product.out_of_stock}}disabled{{/if}}" data-button-purchase {{#if product.pre_order}}data-button-preorder{{/if}} {{#if product.out_of_stock}}disabled{{/if}}>
+          <span data-button-text>
+            {{#if product.out_of_stock}}
+              {{lang 'product.sold_out'}}
+            {{else}}
+              {{#if product.pre_order}}
+                {{lang 'product.pre_order'}}
+              {{else}}
+                {{lang 'product.add_to_cart'}}
+              {{/if}}
+            {{/if}}
+          </span>
+        </button>
+        {{> components/common/spinner}}
+        {{#if product.can_purchase}}
+          {{#if quickshop}}
+            <a class="view-product-button button button-alt" href="{{product.url}}">View Product</a>
+          {{/if}}
+        {{/if}}
+      </div>
+    {{else}}
+      <div class="product-add-button-wrapper">
+        <button class="product-add-button button disabled" disabled>
+          <span data-button-text>
+            {{lang 'product.unavailable'}}
+          </span>
+        </button>
+      </div>
+    {{/if}}
+  </div>
+
+  {{#unless quickshop}}
+    <div class="single-product-tabs">
+      <ul class="tabs-navigation" data-tabs>
+        {{#if product.description}}
+          <li class="tab-title"><a href="#product-details">{{lang 'products.tabs.details'}}</a></li>
+        {{/if}}
+
+        {{#if settings.show_product_reviews}}
+          <li class="tab-title"><a href="#product-reviews">{{lang 'products.tabs.reviews'}}</a></li>
+        {{/if}}
+
+        {{#if product.videos.list.length}}
+          <li class="tab-title"><a href="#product-videos">{{lang 'products.tabs.videos'}}</a></li>
+        {{/if}}
+      </ul>
+
+      <div class="tabs-content">
+        {{#if product.description}}
+          <div class="tabs-content-panel" id="product-details">
+            <div class="product-description rte">
+              {{{product.description}}}
+
+              {{{snippet 'product_description'}}}
+            </div>
+          </div>
+        {{/if}}
+
+        {{#if settings.show_product_reviews}}
+          <div class="tabs-content-panel" id="product-reviews">
+            {{#if product.reviews.list.length}}
+              <div class="reviews-header">
+                <div class="reviews-header-summary">
+                  {{#if settings.show_product_rating}}
+                    {{> components/products/ratings rating=product.rating size="large"}}
+                  {{/if}}
+                  <div class="reviews-rating-summary">
+                    {{{lang 'product.reviews.total_based_on' score=product.rating numReviews=product.num_reviews}}}
+                    <a href="#modal-review-form" class="review-link">{{ lang 'product.reviews.leave_review' }}.</a>
+                  </div>
+                </div>
+              </div>
+              {{#each product.reviews.list}}
+                {{> components/products/review-item}}
+              {{/each}}
+              <a href="#modal-review-form" class="button button-alt review-link">{{ lang 'product.reviews.leave_review' }}</a>
+
+              {{{snippet 'reviews'}}}
+            {{else}}
+              <p>{{lang 'product.reviews.no_reviews'}}</p>
+              <a href="#modal-review-form" class="button button-alt review-link">{{ lang 'product.reviews.leave_review' }}</a>
+            {{/if}}
+          </div>
+        {{/if}}
+
+        {{#if product.videos.list.length}}
+          <div class="tabs-content-panel" id="product-videos">
+            {{#each product.videos.list}}
+              <div class="product-video-container">
+                <iframe src="https://www.youtube.com/embed/{{id}}?rel=0&showinfo=0&autohide=1" frameborder="0" allowfullscreen></iframe>
+              </div>
+            {{/each}}
+          </div>
+        {{/if}}
+      </div>
+    </div>
+  {{/unless}}
+
+  {{{snippet 'product_details'}}}
+</div>
+
+{{> components/products/review-modal}}
