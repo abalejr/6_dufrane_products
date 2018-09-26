@@ -42,12 +42,17 @@
 
     {{#if product.brand}}
       <div class="single-product-brand">
-        <span class="single-product-meta-item-label">{{lang 'product.brand'}}:</span>
-        {{#if product.brand.url}}
-          <a class="single-product-meta-item-value" href="{{product.brand.url}}">{{product.brand.name}}</a>
-        {{else}}
-          <span class="single-product-meta-item-value">{{product.brand.name}}</span>
-        {{/if}}
+        <div class="single-product-brand-content"
+          <span class="single-product-meta-item-label">{{lang 'product.brand'}}:</span>
+          {{#if product.brand.url}}
+            <a class="single-product-meta-item-value" href="{{product.brand.url}}">{{product.brand.name}}</a>
+          {{else}}
+            <span class="single-product-meta-item-value">{{product.brand.name}}</span>
+          {{/if}}
+        </div>
+        <div class="single-product-shipping-badge">
+          <img src="https://raw.githubusercontent.com/abalejr/6_dufrane_products/master/assets/img/free-shipping-badge.png">
+        </div>
       </div>
     {{/if}}
 
