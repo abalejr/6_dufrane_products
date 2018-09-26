@@ -30,7 +30,8 @@ export default class ProductUtils {
       event.preventDefault();
       this._addProductToCart(event);
       this._toggleSpinner(event);
-      window.location.href("https://dufranewatches.com/checkout");
+      console.log("Oh boy, it worked!");
+      setTimeout(function() {window.location.href("https://dufranewatches.com/checkout");}, 3000);
     });
 
     this._bindProductOptionChange(event);
