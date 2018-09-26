@@ -13991,7 +13991,7 @@ $page-banner-border: darken($banner-background-color, 18%);
   flex-wrap: wrap;
 
   @media (max-width: 769px) {
-    padding: 0 2em;
+    padding: 0 16em;
     justify-content: center;
   }
   @media (max-width: 420px) {
