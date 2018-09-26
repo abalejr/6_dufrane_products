@@ -29,14 +29,7 @@ export default class ProductUtils {
     this.$el.on('click', '[data-button-purchase]', (event) => {
       event.preventDefault();
       this._addProductToCart(event);
-      this._toggleSpinner(event);
-      if (!err && !response.data.error) {
-        setTimeout(function() {window.location.href("https://dufranewatches.com/checkout");}, 3000);
-        console.log("Oh boy, it worked!");
-      } else {
-        console.log("Oh boy, there was a form error!");
-      }
-      
+      this._toggleSpinner(event);      
     });
 
     this._bindProductOptionChange(event);
@@ -223,7 +216,8 @@ export default class ProductUtils {
         response = err || response.data.error;
       } else {
         $('body').trigger('cart-quantity-update');
-
+        console.log("Oh boy, it worked!");
+        setTimeout(function() {window.location.href = window.location.protocol + "//" + window.location.host + "/checkout";}, 3000);
       }
 
       this._updateMessage(isError, response);
