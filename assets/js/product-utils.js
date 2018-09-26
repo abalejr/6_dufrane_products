@@ -216,8 +216,7 @@ export default class ProductUtils {
         response = err || response.data.error;
       } else {
         $('body').trigger('cart-quantity-update');
-        console.log("Oh boy, it worked!");
-        setTimeout(function() {window.location.href = window.location.protocol + "//" + window.location.host + "/checkout";}, 3000);
+        window.location.href = window.location.protocol+"//"+window.location.host+"/checkout";
       }
 
       this._updateMessage(isError, response);
